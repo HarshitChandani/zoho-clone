@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <title>Zoho</title>
+      <meta name="description" content="ZOHO HRMS PORTAL">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      {% include "links.html" %}
+   </head>
+   <body>
+      <div class="container-fluid m-0 p-0">
+         <nav id="navbar-example2" class="navbar navbar-light bg-light">
+            <a class="navbar-brand">
+              <img src="https://celebaltech.com/assets/img/celebal.webp" with="50" height="30" />
+            </a>
+            <ul class="nav nav-pills">
+              <li class="nav-item px-1">
+                <i class="fa-regular fa-bell"></i>
+              </li>
+              <li class="nav-item px-1">
+                <div class="profile-pic" style="border: 1px grey;border-radius:50%">
+                  <img id="zoho-profile-pic" src="https://people.zoho.in/hrmsportal13102016/viewPhoto?erecno=22363000016561945&mode=3&avatarid=913" imgtype="thumb" style="width:36px; height:36px; cursor:pointer;border-radius:50%">
+                </div>
+              </li>
+            </ul>
+          </nav>
+         {% block content %}
+
+         {% endblock content %}
+      </div>
+   </body>
+</html>

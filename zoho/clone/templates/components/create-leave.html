@@ -1,0 +1,81 @@
+{% include 'layout.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="d-flex flex-column">
+   <div class="row">
+      <div class="col-2"> 
+         {% include '../menu.html' %} 
+      </div>
+      <div class="col-10">
+         <div class="leave-tracker p-4" style="background-color: rgb(243 243 243);">
+            <div class="d-flex flex-wrap flex-column m-2">
+               <div class="create-leave-box p-1" style="background-color:white">
+                  <h6>Apply Leave</h6>
+                  <div class="leave-form p-2">
+                     <form method="post" action="{% url 'zoho:apply-leave' %}">
+                        <input type="hidden" value="{{request.user.id}}" name="emp_user_id"/>
+                        {% csrf_token %}
+                        <div class="form-group row">
+                          <label for="hrm_id" class="col-sm-2 col-form-label">Employee ID</label>
+                          <div class="col-sm-10">
+                            <input type="text"class="form-control" id="hrm_id" name="hrm_id" value="{{request.session.employee_hrm_id}}" readonly>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="leave-type" class="col-sm-2 col-form-label">Leave type</label>
+                          <div class="col-sm-10">
+                           <select class="form-select form-control" aria-label="Leave type" name="leave_type" required>
+                              <option selected>Open this select menu</option>
+                              {% for type in  leave_type %}
+                                 <option value="{{type.id}}">{{type.name | upper}}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group row" data-provide="datepicker">
+                           <label for="" class="col-sm-2 col-form-label">From Date</label>
+                           <div class="col-sm-4 form-group row">
+                              <input type='date' class="form-control" placeholder="From" name="from-date" required/>
+                           </div>
+                           <label for="leave-type" class="col-sm-2 col-form-label">To Date</label> 
+                           <div class="col-sm-4">
+                              <input type='date' class="form-control" placeholder="To" name="to-date" required/>
+                           </div>
+                        </div>  
+                        <div class="form-group row">
+                           <label for="leave-type" class="col-sm-2 col-form-label">Reason</label>
+                           <div class="col-sm-10">
+                              <textarea class="form-control" name="leave-reason" rows="3" placeholder="Reason" maxlength="200" required></textarea>
+                           </div>
+                        </div>  
+                        <div class="form-group row mx-3 my-2">
+                           <span class="mx-2">
+                              <button class="btn btn-primary" value="create-leave">Apply</button>                              
+                           </span>
+                           <span class="mx-2">
+                              <a href="{% url 'zoho:home' request.session.employee_hrm_id %}" role="button" class="btn btn-outline-dark">Cancel</a>                              
+                           </span>
+                        </div>
+                        <div class="error-message my-3">
+                           {% if messages %}
+                              
+                              <div class="alert alert-warning alert-dismissible fade show w-75" role="alert">
+                                 <strong>Holy guacamole!</strong> You should check in on some of those fields below.</strong>
+                              </div>
+                           {% endif %}
+                        </div>
+                      </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+{% endblock content %}
+
+
+

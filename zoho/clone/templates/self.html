@@ -1,0 +1,362 @@
+{% include 'layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid m-0 p-0">
+   <div class="zoho-people-profile pt-5" style="background: url('https://img.zohostatic.in/people/3June2022_HFR_1756/people3/images/hed0.png') 50% 99% / cover repeat-x; position:relative;">   
+      <div class="container w-50 text-light pt-3 pb-1 " style="font-size:15px;">
+         <div class="row">
+            <div class="emp-name mx-3">{{personal.name | upper}}</div>
+            <div class="emp-name mx-3">{{about_me.position | upper}}</div>
+            <div class="emp-name mx-3">{{about_me.department | upper}}</div>
+            <div class="emp-name mx-3">harshit.chandani@celabaltech.com</div>
+         </div>
+      </div>
+   </div>
+   <div class="d-flex flex-column">
+      <div class="row">
+         <div class="col-2"> 
+            {% include 'menu.html' %} 
+         </div>
+         <div class="col-10">
+            <div class="emp-details p-4" style="background-color: rgb(243 243 243);">
+               <div class="d-flex flex-wrap flex-column m-2">
+                  <div class="row">
+                     <div class="card-columns">
+                        <div class="card">
+                           <div class="card-body p-2">
+                              <div class="text-left font-weight-bold" style="font-size:18px">About me</div>
+                              <div class="container m-3">
+                                 <div class="d-flex flex-column flex-wrap">
+                                    <div class="row">
+                                       <div class="col-6 p-1 my-2">
+                                          <span class="logo">
+                                             <img src="{% static 'department.png' %}" width="25" height="25">
+                                             <span class="department" style="font-size:16px">{{about_me.department | upper }}</span>
+                                          </span>
+                                       </div>
+                                       <div class="col-6 p-1 my-2">
+                                          <span class="logo">
+                                             <img src="{% static 'team.png' %}" width="25" height="25">
+                                             <span class="department" style="font-size:16px">{{about_me.position | upper }}</span>
+                                          </span>
+                                       </div>
+                                       <div class="col-6 p-1 my-2">
+                                          <span class="logo">
+                                             <img src="{% static 'mobile-phone.png' %}" width="25" height="25">
+                                             <span class="department" style="font-size:16px">{{personal.no}}</span>
+                                          </span>
+                                       </div>
+                                       <div class="col-6 p-1 my-2">
+                                          <span class="logo">
+                                             <img src="{% static 'id-card.png' %}" width="28" height="28">
+                                             <span class="department" style="font-size:16px">{% if about_me.type == '3' %}Intern {% elif about_me.type == '2' %} Trainee {% else %}General {% endif %} </span>
+                                          </span>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div> 
+                           </div>
+                        </div>
+                        <div class="card">
+                           <div class="card-body p-2">
+                              <div class="text-left font-weight-bold" style="font-size:18px">Reporting To</div>
+                              <div class="container m-3">
+                                 <div class="d-flex flex-column flex-wrap">
+                                    <div class="row">
+                                       <div class="col-12">
+                                          <div class="">
+                                             <img src="{% static 'manager.png' %}" width="30" height="30" style="border:1px solid black;border-radius:50%">
+                                             <span class="department mx-2" style="font-size:16px">
+                                                {{work.reporting_manager | upper }}
+                                             </span>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div> 
+                           </div>
+                        </div>
+                        <div class="card">
+                           <div class="card-body p-2">
+                              <div class="text-left font-weight-bold" style="font-size:18px">Basic Info</div>
+                              <div class="container m-3">
+                                 <div class="d-flex flex-column flex-wrap">
+                                    <div class="row">
+                                       <div class="col-12">
+                                          <table class="table">
+                                             <tbody>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         EmployeeID
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{work.hrm_id | upper }}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         Last Name
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{personal.l_name | upper }}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         First Name
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{personal.f_name | upper }}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                      Email-ID
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{work.office_mail | lower }}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                             </tbody>
+                                          </table>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div> 
+                           </div>
+                        </div>
+                        <div class="card">
+                           <div class="card-body p-2">
+                              <div class="text-left font-weight-bold" style="font-size:18px">Personal</div>
+                              <div class="container m-3">
+                                 <div class="d-flex flex-column flex-wrap">
+                                    <div class="row">
+                                       <div class="col-12">
+                                          <table class="table">
+                                             <tbody>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         Phone-no
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         +91-{{personal.no | upper }}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         Other Email
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{personal.mail | lower}}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         Birth Date
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{personal.birth_date }}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                      Martial Status
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{personal.martial_status | upper }}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                      Martial Status
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{personal.martial_status | upper }}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                      Communication Address
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{personal.comm_addr | lower }}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                      Permanent Address
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{personal.permanent_add | lower}}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                      Postal Code
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{personal.postal_code }}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                             </tbody>
+                                          </table>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div> 
+                           </div>
+                        </div>
+                        <div class="card">
+                           <div class="card-body p-2">
+                              <div class="text-left font-weight-bold" style="font-size:18px">Work</div>
+                              <div class="container m-3">
+                                 <div class="d-flex flex-column flex-wrap">
+                                    <div class="row">
+                                       <div class="col-12">
+                                          <table class="table">
+                                             <tbody>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         Department
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{about_me.department | upper }}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         Reporting Manager
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{work.reporting_manager |upper }} {{work.rm_hrmid}}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         Hiring Source
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{personal.hiring_source | upper}}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         Joining Date
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{work.joining_date}}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         Employee Status
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{work.status | upper}}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <th scope="row">
+                                                      <span class="department mx-2" style="font-size:16px;font-weight:500">
+                                                         Working Status
+                                                      </span>
+                                                   </th>
+                                                   <td>
+                                                      <span class="department mx-2" style="font-size:16px">
+                                                         {{work.working_status | upper}}
+                                                      </span>
+                                                   </td>
+                                                </tr>
+                                             </tbody>
+                                          </table>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div> 
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>   
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+{% endblock content %}
+
+
+

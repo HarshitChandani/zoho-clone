@@ -1,0 +1,75 @@
+<div class="menu navbar navbar-light bg-dark">
+   <div class="container">
+     <ul class="nav nav-pills">
+      
+      <a href="{% url 'zoho:home' request.session.employee_hrm_id %}" class="text-dark" style="text-decoration:none">
+        <li class="nav-item my-1 mx-1" role="button" style="cursor:pointer">
+          <div class="card" style="width:7rem;height:5rem">
+            <div class="card-body">
+              <div name="menu-icon" style="text-align:center">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div class="menu-name">
+                <div class="text-center" style="font-size:14px">Home</div>
+              </div>
+            </div>
+          </div>           
+        </li>
+      </a>
+
+      <a href="{% url 'zoho:self' %}" class="text-dark" style="text-decoration:none">
+         <li class="nav-item my-1 mx-1" role="button" style="cursor:pointer">
+           <div class="card" style="width:7rem;height:5rem">
+             <div class="card-body">
+               <div name="menu-icon" style="text-align:center">
+                 <i class="fa-solid fa-user"></i>
+               </div>
+               <div class="menu-name">
+                 <div class="text-center" style="font-size:14px">Self Service</div>
+               </div>
+             </div>
+           </div>           
+         </li>
+      </a>
+      
+      <li class="nav-item my-1 mx-1" style="cursor:pointer">
+        <div class="card" style="width:7rem;height:5rem">
+          <div class="card-body">
+            <div name="menu-icon" style="text-align:center">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="menu-name text-wrap">
+              <div class="text-center" style="font-size:14px">Learning & Development</div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <a href="{% url 'zoho:leaver-tracker' %}" class="text-dark" style="text-decoration:none">
+        <li class="nav-item my-1 mx-1" style="cursor:pointer">
+          <div class="card" style="width:7rem;height:5rem">
+            <div class="card-body">
+              <div name="menu-icon" style="text-align:center">
+                <i class="fa-solid fa-suitcase"></i>
+              </div>
+              <div class="menu-name">
+                <div class="text-center" style="font-size:14px">Leave Tracker</div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </a>
+       <li class="nav-item my-1 mx-1" style="cursor:pointer">
+         <div class="card" style="width:7rem;height:5rem">
+           <div class="card-body">
+             <div name="menu-icon" style="text-align:center">
+               <i class="fa-solid fa-clock"></i>
+             </div>
+             <div class="menu-name">
+               <div class="text-center" style="font-size:14px">Time Tracker</div>
+             </div>
+           </div>
+         </div>
+       </li>
+     </ul>
+   </div>
+ </div>

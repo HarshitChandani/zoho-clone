@@ -1,0 +1,109 @@
+{% include 'layout.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="d-flex flex-column">
+   <div class="row">
+      <div class="col-2"> 
+         {% include 'menu.html' %} 
+      </div>
+      <div class="col-10">
+         <div class="leave-tracker" >
+            <div class="d-flex flex-wrap flex-column m-2">
+               <div class="create-leave-box text-right m-1">
+                  <a href="{% url 'zoho:apply-leave' %}"  role="button" class="btn btn-primary" style="width:10%;font-size:15px">Apply Leave</a>
+               </div>
+               <div class="leave-details-box p-4" style="background-color: rgb(243 243 243);">
+                  <div class="paid-leave-detail-box">
+                     <div class="d-flex flex-column">
+                        <div class="row">
+                           <div class="card m-2 text-center" style="width:18% !important">
+                              <div class="card-title my-2" style="font-size:18px;font-weight:600">Leave without pay</div>
+                              <div class="card-body">
+                                 <div class="img-logo">
+                                    <img src="{% static 'unpaid-leave.png' %}" width="55px" height="60px">
+                                 </div>
+                                 <div class="booked-details mt-4">
+                                    <span><h6>Booked: {{booked_unpaid_leave}} </h6></span>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="card m-2 text-center" style="width:18% !important">
+                              <div class="card-title my-2" style="font-size:18px;font-weight:600">Paid Leave</div>
+                              <div class="card-body">
+                                 <div class="img-logo">
+                                    <img src="{% static 'paid-leave.png' %}" width="55px" height="60px">
+                                 </div>
+                                 <div class="booked-details mt-4">
+                                    <span><h6>Available: {{available_paid_leave}}</h6></span>
+                                    <span><h6>Booked: {{booked_paid_leave}}</h6></span>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="all_leave_detail">
+                           <div class="card w-100 p-2">
+                              <div class="card-title" style="font-size:18px;font-weight:600">All leaves</div>
+                              <div class="card-body">
+                                 {% if all_leave_data != False %}
+                                 
+                                    <table class="table table-sm">
+                                       <tbody>
+                                          {% for history in  all_leave_data %}
+                                             <tr>
+                                                <td width="25%" style="font-size:16px">
+                                                   <div class="mx-2">
+                                                      <div class="text-info">{{history.leave_id.from_date|date:"d M,D"}}</div>
+                                                      <div> to </div>
+                                                      <div class="text-info">{{history.leave_id.to_date|date:"d M,D" }}</div>
+                                                   </div>
+                                                </td>
+                                                <td width="20%">
+                                                   <div class="cnt-days mx-2" style="font-size:18px">
+                                                      {% if history.leave_id.leave_type.name == "paid" %}
+                                                         <div class="text-success m-0 ">Paid Leave</div>
+                                                      {% elif history.leave_id.leave_type.name == "unpaid" %}
+                                                         <div class="text-danger m-0">Leave without pay</div>
+                                                      {% endif %}
+                                                      <div class="text-dark" style="font-size:13px;word-break:break-all">
+                                                         {{history.leave_id.cnt_leave}} day(s)
+                                                      </div>
+                                                   </div>
+                                                </td>
+                                                <td width="40%">
+                                                   <div class="text-left mx-2" style="font-size:15px;width: 25rem">
+                                                      {{history.leave_id.reason}}
+                                                   </div>
+                                                </td>
+                                                <td width="15%">
+                                                   <div class="leave-approved-column">
+                                                   {% if history.is_leave_approved %}
+                                                      <span>
+                                                         <i class="fa-solid fa-thumbs-up text-success"></i> 
+                                                         <span style="font-size:17px">Approved</span>
+                                                      </span>
+                                                   {% elif not history.is_leave_approved%}
+                                                      <i class="fa-solid fa-thumbs-down text-danger"></i>                           
+                                                   {% endif %}   
+                                                   </div>     
+                                                </td>
+                                             </tr>
+                                          {% endfor %}
+                                       </tbody>
+                                    </table>
+                                 {% endif %}
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+   
+{% endblock content %}
+
