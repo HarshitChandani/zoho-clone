@@ -4,9 +4,11 @@ from .models import (
    Department,
    EmpSelf,
    EmpPersonal,
-   LeavesCreateModel,
    LeavesAndHolidays,
-   LeaveType
+   LeavesCreateModel,
+   LeaveType,
+   TimeTracker,
+   Attendence
 )
 
 admin.site.register(Department)
@@ -15,3 +17,5 @@ admin.site.register(EmpPersonal)
 admin.site.register(LeavesCreateModel)
 admin.site.register(LeavesAndHolidays)
 admin.site.register(LeaveType)
+admin.site.register(TimeTracker)
+admin.site.register(Attendence)

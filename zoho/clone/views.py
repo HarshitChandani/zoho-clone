@@ -1,20 +1,28 @@
 # Standard Library
-from datetime import datetime
+from datetime import datetime,date
+import json
 
 # Django
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,HttpResponse
 from django.views import View
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 
-# Local Django
+# Local Imports
 from .models import (
-   EmpEelf as employee,
+   EmpSelf as employee,
    LeaveType as l_type,
    LeavesCreateModel as apply_leave,
    LeavesAndHolidays as leaves_and_holidays
 ) 
+from .services.time_tracker import (
+   save_timesheet_data,
+   get_all_time_sheet_data,
+   get_date_time_log
+)
+from .services.attendence import record_attendence
+from .services.self_service import emp_self_data
 
 
 def home(request,hrmportalid:str):
@@ -23,53 +31,10 @@ def home(request,hrmportalid:str):
 def self_service(request):
    if request.method == "GET":
       hrm_id = request.session["employee_hrm_id"]
-      working_status_dict = {
-         'WFH':'work from home',
-         'WFO':'work from office',
-         'hybrid':'working hybrid'
-      }
-      emp_data = employee.objects \
-                        .select_related('dept','personal','rm') \
-                        .get(hrm_id=hrm_id)
-      context = {
-         'zoho':{
-            'index':['about_me','personal','work']
-         },
-         'about_me':{
-            'department':emp_data.dept.name,
-            'position':emp_data.position,
-            'location':emp_data.office_loc,
-            'type':emp_data.type,
-         },
-         'personal':{
-            'name':"{} {}".format(request.user.first_name,request.user.last_name),
-            'f_name':request.user.first_name,
-            'l_name':request.user.last_name,
-            'gender':emp_data.personal.gender,
-            'no':emp_data.personal.no,
-            'mail': emp_data.personal.email,
-            'birth_date':emp_data.personal.birth_date,
-            'martial_status':emp_data.personal.martial_status,
-            'comm_addr':emp_data.personal.communication_add,
-            'permanent_add':emp_data.personal.permanent_add,
-            'postal_code':emp_data.personal.postal_code,
-            'pan_no':emp_data.personal.pan_no,
-            'aadhar_no':emp_data.personal.aadhar_no,
-            'hiring_source':emp_data.personal.hiring_src
-         },
-         'work':{
-            'reporting_manager':"{} {}".format(emp_data.rm.first_name,emp_data.rm.last_name),
-            'hrm_id':hrm_id,
-            'office_mail':request.user.email,
-            'joining_date':emp_data.joining_date,
-            'status':emp_data.status,
-            'working_status':working_status_dict[emp_data.working_status]
-         },
-
-      }
+      context = emp_self_data(request,hrm_id = hrm_id)
       return render(request,'self.html',context)
 
-class loginView(View):
+class LoginView(View):
    def get(self,request):
       if request.user.is_authenticated:
          logout(request)
@@ -113,7 +78,7 @@ class CreateLeaveView(View):
       context = {
          'leave_type':get_leave_type
       }
-      return render(request,'components/create-leave.html',context)
+      return render(request,'create-leave.html',context)
 
    def post(self, request):
 
@@ -191,8 +156,38 @@ class CreateLeaveView(View):
 
       return redirect("zoho:leaver-tracker")
       
-      """ 
-         create messages 
-      """
-
+class TimeTrackerView(View):
+   def get(self, request):
+      get_all_time_sheet_data(request)
+      return render(request,"time-tracker.html")
       
+   def post(self, request):
+      timesheet_data = request.POST.get("data",None)
+      if timesheet_data != None:
+         job_dict = json.loads(timesheet_data)
+         if save_timesheet_data(request,job_dict):
+            print("data created")
+            return HttpResponse(json.dumps({
+               'recorded':True,}),
+               content_type="application/json")
+
+def daily_log(request):
+   _date = datetime.now().date()
+   data = get_date_time_log(request,log_date=_date)
+   if data is not None:
+      context = {
+         'time_log_data':data
+      }   
+   else:
+      context = {
+         'time_log_data':None
+      }
+   return render(request,'day_log.html',context)
+
+class AttendenceView(View):
+   def get(self, request):
+     pass
+   
+   def post(self, request):
+       return record_attendence(request)
+

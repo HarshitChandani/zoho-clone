@@ -1,0 +1,104 @@
+{% include 'layout.html' %}
+
+{% load static %}
+
+{% block content %}
+<style>
+   .log-boxes{
+      border-top:none;
+      border-right:none;
+      border-left:none;
+      font-size:17px;
+   }
+</style>
+<div class="d-flex flex-column">
+   <div class="row">
+      <div class="col-2"> 
+         {% include 'menu.html' %} 
+      </div>
+      <div class="col-10">
+         <div class="log-date text-center my-2 font-weight-bold">
+            {% now "N d,Y ( l )"  %}
+         </div>
+         <div class="leave-tracker" >
+            {% csrf_token %}
+            <table class="table table-responsive" name="time-tracker-table" id="time-tracker-table">
+               <thead>
+                  <tr style="font-size:16px">
+                     <th class="col-sm-1">S.No</th>
+                     <th class="col-sm-3">Job Title</th>
+                     <th class="col-sm-5">Description</th>
+                     <th class="col-sm-2">Hour(s)</th>
+                  </tr>
+               </thead>
+               <tbody class="time-tracker-table-body" >
+                  {% if time_log_data is not None %}
+                     {% for _,logs in time_log_data.items %}
+                     
+                        <tr style="font-size:16px" id="job-{{forloop.counter}}">
+                           <td scope="row">
+                              <div class="form-group">
+                                 <input type="text" class="form-control w-100 log-boxes" readonly value="{{forloop.counter}}"/>
+                              </div>
+                           </td>
+                           <td>
+                              <div class="form-group">
+                                 <input type="text" class="form-control w-100 log-boxes" name="job-title-{{forloop.counter}}" id="job-title-{{forloop.counter}}" value="{{logs.title}}"/>
+                              </div>
+                           </td>
+                           <td>
+                              <div class="form-group">
+                                 <input type="text" class="form-control w-100 log-boxes" name="job-description-{{forloop.counter}}" id="job-description-{{forloop.counter}}"
+                                 value="{{logs.description}}"/>
+                              </div>
+                           </td>
+                           <td>
+                              <div class="form-group">
+                                 <input type="text" class="form-control w-100 log-boxes" name="job-hour-{{forloop.counter}}" maxlength="5" id="job-hour-{{forloop.counter}}" onkeyup="daily_log_hours(this)" value="{{logs.hour}}"/>
+                              </div>
+                           </td>
+                        </tr>
+                     {% endfor %}
+                  {% else %}
+                     <tr style="font-size:16px" id="job-1">
+                        <td scope="row">
+                           <div class="form-group">
+                              <input type="text" class="form-control w-100" readonly value="1"/>
+                           </div>
+                        </td>
+                        <td>
+                           <div class="form-group">
+                              <input type="text" class="form-control w-100" name="job-title-1" id="job-title-1" value=""/>
+                           </div>
+                        </td>
+                        <td>
+                           <div class="form-group">
+                              <input type="text" class="form-control w-100" name="job-description-1" id="job-description-1"
+                              value=""/>
+                           </div>
+                        </td>
+                        <td>
+                           <div class="form-group">
+                              <input type="text" class="form-control w-100" name="job-hour-1" maxlength="5" id="job-hour-1" onkeyup="daily_log_hours(this)" value=""/>
+                           </div>
+                        </td>
+                     </tr>
+                  {% endif %}
+               </tbody>
+            </table>
+            <div class="form-group w-25">
+               <span>Total hour's
+                  <input type="text" class="form-control w-100" value="" id="ttl-work-hours" readonly/></span>
+               </div>
+            <div class="add-job-btn">
+               <button class="btn btn-outline-primary  font-weight-bold" style="font-size:15px;width:9%" onclick="javascript:add_job_row()">Add Row</button>            
+               <button class="btn btn-outline-success font-weight-bold" style="font-size:15px;width:9%" onclick="javascript:save_timetracker_data()">Save</button>
+               <a href="{% url 'zoho:time-tracker' %}" role="button" class="btn btn-outline-danger font-weight-bold" style="font-size:15px;width:9%;text-decoration:none">Cancel</a>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+   
+{% endblock content %}
+

@@ -1,0 +1,23 @@
+{% include 'layout.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="d-flex flex-column">
+   <div class="row">
+      <div class="col-2"> 
+         {% include 'menu.html' %} 
+      </div>
+      <div class="col-10">
+         <div class="daily-log-btn my-2">
+            <a href="{% url 'zoho:daily-log' %}" role="button" class="form-control btn-primary text-center" style="width:15% !important;text-decoration:none">Add Daily Log</a>
+         </div>
+      </div>
+   </div>
+</div>
+
+{% endblock content %}
+
+
+

@@ -1,11 +1,11 @@
-# Django Imports
+# Django
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 
-# Custome imports
-from .components.choices import (
+# Local imports
+from .services.choices import (
    martial_status,
    positions,
    emp_type,
@@ -41,7 +41,7 @@ class EmpPersonal(models.Model):
    """
    user = models.ForeignKey(User,on_delete=models.CASCADE)
    no = models.CharField(max_length=10,null=False,blank=True)
-   email=models.CharField(max_length=100,help_text='Employee personal email id',null=False,blank=True)
+   email=models.EmailField(max_length=254,help_text='Employee personal email id',null=False,blank=True)
    birth_date = models.DateField()
    martial_status = models.CharField(max_length=100,choices=martial_status)
    communication_add = models.TextField()
@@ -74,16 +74,15 @@ class EmpSelf(models.Model):
    class Meta:
       verbose_name_plural = 'employee info'
 
-
 class LeaveType(models.Model):
    name = models.CharField(max_length=255,help_text="Leave name",choices = leave_type,unique=True)
    timestamp = models.DateTimeField()
 
-   def str(self):
-      return self.name
-
    class Meta:
       verbose_name_plural = 'Leave Type'
+
+   def str(self):
+      return self.name
 
 class LeavesCreateModel(models.Model):
    """
@@ -96,13 +95,12 @@ class LeavesCreateModel(models.Model):
    to_date = models.DateField()
    reason = models.TextField(max_length=500)
 
+   class Meta:
+      verbose_name_plural = 'Create Leave'
+
    def save(self,*args,**kwargs):
       self.cnt_leave = count_leave_days(self)
       return super(LeavesCreateModel,self).save(**kwargs)
-
-
-   class Meta:
-      verbose_name_plural = 'Create Leave'
 
 class LeavesAndHolidays(models.Model):
    """
@@ -121,8 +119,22 @@ class LeavesAndHolidays(models.Model):
    class Meta:
       verbose_name_plural = "Leaves and Holiday"
 
-######## Function & Signals
+class Attendence(models.Model):
+   user = models.ForeignKey(User,on_delete=models.CASCADE)
+   date = models.DateField()
+   checkin_time = models.TimeField(auto_now=False)
+   checkout_time = models.TimeField(auto_now=False)
+   ttl_work_time = models.TimeField(auto_now=False)
+   
 
+class TimeTracker(models.Model):
+   date = models.DateField()
+   user = models.ForeignKey(User,on_delete=models.CASCADE)
+   jobs = models.TextField()
+   ttl_hours = models.CharField(max_length = 50,null=False,blank=True)
+
+
+######## Function & Signals
 def count_leave_days(instance):
    from_day,from_month = int(instance.from_date.strftime("%d")),int(instance.from_date.strftime("%m"))
    to_day,to_month = int(instance.to_date.strftime("%d")),int(instance.from_date.strftime("%m"))
@@ -139,5 +151,6 @@ def process_emp(sender,instance,created,**kwargs):
       hrm_id = create_hrm(instance)
       emp_id = instance.id
       EmpSelf.objects.filter(id = emp_id).update(hrm_id=hrm_id)
+
       
      

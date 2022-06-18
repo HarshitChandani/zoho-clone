@@ -4,6 +4,30 @@
 {% load static %}
 {% block content %}
    {% include 'menu.html' %}
+   <div class="d-flex flex-wrap flex-column  my-2">
+      <div class="row">
+         <div class="col-2">
+            <div class="attendence-box m-3">
+               <div class="card text-left">
+                 <div class="card-body">
+                   <h6 class="card-title text-center">Attendence</h6>
+                   <div class="attendence-timer text-center my-3">
+                     {% csrf_token %}
+                     <input type="hidden" id="hidden_attendence_timer" />
+                     <div id="timer" class="timer" style="font-size:20px">
+                        00:00:00
+                     </div>
+                   </div>
+                   <div class="check-in-attendence-btn">
+                     <button class="btn btn-success w-100" id="check-in-btn" onclick="javascript:check_in()" style="display:block">Check-In</button>
+                     <button class="btn btn-danger w-100" id="check-out-btn" onclick="javascript:check_out()" style="display:none">Check-Out</button>
+                   </div>
+                 </div>
+               </div>         
+            </div>
+         </div>
+      </div>
+   </div>
 {% endblock content %}
 
 
