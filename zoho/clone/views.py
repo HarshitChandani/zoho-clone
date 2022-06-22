@@ -1,19 +1,17 @@
 # Standard Library
-from datetime import datetime,date
+from datetime import datetime
 import json
 
 # Django
 from django.shortcuts import render,redirect,HttpResponse
 from django.views import View
 from django.contrib.auth import authenticate, login,logout
-from django.contrib import messages
-from django.contrib.auth.models import User
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 # Local Imports
 from .models import (
-   EmpSelf as employee,
    LeaveType as l_type,
-   LeavesCreateModel as apply_leave,
    LeavesAndHolidays as leaves_and_holidays
 ) 
 from .services.time_tracker import (
@@ -21,17 +19,18 @@ from .services.time_tracker import (
    get_all_time_sheet_data,
    get_date_time_log
 )
+from .services.leave_tracker import apply_leave
 from .services.attendence import record_attendence
 from .services.self_service import emp_self_data
 
 
-def home(request,hrmportalid:str):
+@login_required(login_url='/login/')
+def home(request):
    return render(request,'home.html')
 
 def self_service(request):
    if request.method == "GET":
-      hrm_id = request.session["employee_hrm_id"]
-      context = emp_self_data(request,hrm_id = hrm_id)
+      context = emp_self_data(request)
       return render(request,'self.html',context)
 
 class LoginView(View):
@@ -44,14 +43,11 @@ class LoginView(View):
       loginUsername = request.POST.get('username')
       loginPassword =  request.POST.get('password')
       user = authenticate(username=loginUsername, password=loginPassword)
-      if user is not None:
-         login(request, user)
-         emp_details = employee.objects.filter(id=request.user.id).get()
-         request.session['employee_hrm_id'] = emp_details.hrm_id
-         return redirect('zoho:home',hrmportalid = emp_details.hrm_id)
+      if user is None:
+         return render(request,'login.html',status=401)
       else:
-         # messages.error(request,"Invalid Credentials")
-         return redirect("zoho:login")
+         login(request,user)
+         return redirect('zoho:home')
 
 def leave_tracker(request):
    get_emp_leave_status = leaves_and_holidays.objects.filter(user=request.user).order_by("-id")[0]
@@ -82,90 +78,24 @@ class CreateLeaveView(View):
 
    def post(self, request):
 
-      hrm_id = request.POST.get('hrm_id')
-
       # leave create process
-      leave_type = request.POST.get('leave_type')
-      reason = request.POST.get('leave-reason')
-
-      parsed_from_date = datetime.strptime(request.POST.get('from-date'),"%Y-%m-%d")
-      parsed_to_date = datetime.strptime(request.POST.get('to-date'),"%Y-%m-%d") 
-      
-      last_leave_app = leaves_and_holidays.objects.filter(user=request.user).order_by("-id")[0]
-      get_last_leave_app_data = leaves_and_holidays.objects.get(id=last_leave_app.id)
-      cnt_leave_taken = ( parsed_to_date.day - parsed_from_date.day + 1 ) 
-         
-      if leave_type == "1": # paid leave
-         
-         get_aval_paid_leave = get_last_leave_app_data.curr_avail_paid_leave
-         
-         if cnt_leave_taken > get_aval_paid_leave:
-            # Not enough paid leave balance
-            messages.add_message(request,messages.error,"Not enough paid leave balance available.")
-
-         elif (cnt_leave_taken < get_aval_paid_leave) or (cnt_leave_taken == get_aval_paid_leave):
-            # employee has enough balance to apply for paid leave 
-            
-            create_leave = apply_leave.objects.create(
-               leave_type = l_type.objects.get(id=leave_type),
-               title = None,
-               from_date = parsed_from_date,
-               to_date = parsed_to_date,
-               reason = reason
-            )
-            leave_id = create_leave.id
-            create_leave.save()
-            print("Paid Leave Created")
-            remaining_paid_leave_balance = get_aval_paid_leave - cnt_leave_taken
-            create_leave_record = leaves_and_holidays.objects.create(
-               user = request.user,
-               leave_id = apply_leave.objects.get(id=leave_id),
-               curr_avail_paid_leave = remaining_paid_leave_balance,
-               curr_booked_paid_leave =get_last_leave_app_data.curr_booked_paid_leave  + cnt_leave_taken,
-               curr_booked_unpaid_leave = get_last_leave_app_data.curr_booked_paid_leave,
-               hrm_id = hrm_id
-            )
-            create_leave_record.save()
-            print("Leave application successfully created.")
-            messages.add_message(request,messages.SUCCESS,"Leave application successfully created.")
-
-      elif leave_type == "2": #unpaid leave
-            create_leave = apply_leave.objects.create(
-               leave_type = l_type.objects.get(id=leave_type),
-               title = None,
-               from_date = parsed_from_date,
-               to_date = parsed_to_date,
-               reason = reason
-            )
-            leave_id = create_leave.id
-            create_leave.save()
-            print("UnPaid Leave Created")
-
-            create_leave_record = leaves_and_holidays.objects.create(
-               user = request.user,
-               leave_id = apply_leave.objects.get(id=leave_id),
-               curr_avail_paid_leave = get_last_leave_app_data.curr_avail_paid_leave,
-               curr_booked_paid_leave = get_last_leave_app_data.curr_booked_paid_leave,
-               curr_booked_unpaid_leave = get_last_leave_app_data.curr_booked_unpaid_leave + cnt_leave_taken,
-               hrm_id = hrm_id
-            )
-         
-            create_leave_record.save()
-            print("UnPaid leave Application successfully created.")
-            messages.add_message(request,messages.SUCCESS,"Leave application successfully created.")
-
+      is_leave_created = apply_leave(request)
+      print(is_leave_created)
+      print("Leave application successful" if is_leave_created else "Leave application failed")    
       return redirect("zoho:leaver-tracker")
-      
+
+
 class TimeTrackerView(View):
    def get(self, request):
       get_all_time_sheet_data(request)
       return render(request,"time-tracker.html")
       
    def post(self, request):
-      timesheet_data = request.POST.get("data",None)
+      timesheet_data = request.POST.get("job_data")
+      ttl_work_hr = request.POST.get('ttl_work_hr')
       if timesheet_data != None:
          job_dict = json.loads(timesheet_data)
-         if save_timesheet_data(request,job_dict):
+         if save_timesheet_data(request,job_dict,total_work_hrs = ttl_work_hr):
             print("data created")
             return HttpResponse(json.dumps({
                'recorded':True,}),
@@ -174,15 +104,18 @@ class TimeTrackerView(View):
 def daily_log(request):
    _date = datetime.now().date()
    data = get_date_time_log(request,log_date=_date)
+   
    if data is not None:
       context = {
-         'time_log_data':data
+         'time_log_data':data["job_data"],   
+         'ttl_work_hrs':data["ttl_work_hours"]
       }   
    else:
       context = {
          'time_log_data':None
       }
    return render(request,'day_log.html',context)
+
 
 class AttendenceView(View):
    def get(self, request):

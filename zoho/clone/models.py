@@ -1,7 +1,7 @@
 # Django
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
 from django.contrib.auth.models import User
 
 # Local imports
@@ -18,22 +18,25 @@ from .services.choices import (
 )
 
 
-def create_hrm(instance,**kwargs):
-   """Function will create a new HRM id of new joinee
+# def create_hrm(instance,**kwargs):
+#    """Function will create a new HRM id of new joinee
 
-      Foramt: department id + month of join + employee id 
-   Args:
-       instance (_type_): instance of newly created record
-   """
-   dept_id = instance.dept.id
-   join_month = instance.joining_date.strftime('%m')
-   emp_id = instance.id
-   hrm_id = "HRM{}{}{}".format(dept_id,join_month,emp_id)
-   return hrm_id
+#       Foramt: department id + month of join + employee id 
+#    Args:
+#        instance (_type_): instance of newly created record
+#    """
+#    dept_id = instance.dept.id
+#    join_month = instance.joining_date.strftime('%m')
+#    emp_id = instance.id
+#    hrm_id = "HRM{}{}{}".format(dept_id,join_month,emp_id)
+#    return hrm_id
 
 class Department(models.Model):
    name = models.CharField(max_length=255,null=False,blank=True)
    emp_cnt = models.IntegerField(null=False,blank=False,default=0) 
+
+   def __str__(self):
+      return self.name
 
 class EmpPersonal(models.Model):
    """
@@ -63,7 +66,7 @@ class EmpSelf(models.Model):
    dept = models.ForeignKey(Department,on_delete=models.CASCADE)
    rm = models.ForeignKey(User,related_name='reporting_manager_id',on_delete=models.CASCADE)
    personal = models.ForeignKey(EmpPersonal,related_name='personal_data',on_delete=models.CASCADE,null=True,help_text="Employee Personal Data")
-   hrm_id = models.CharField(max_length=100,null=False,blank=True)
+   # hrm_id = models.CharField(max_length=100,null=False,blank=True)
    office_loc = models.CharField(max_length=255,default='jaipur',choices=off_loc)
    position = models.CharField(max_length=255,choices=positions)
    type = models.CharField(max_length=255,choices=emp_type)
@@ -113,7 +116,6 @@ class LeavesAndHolidays(models.Model):
    curr_avail_paid_leave  = models.IntegerField(help_text="Currently available paid leaves",default=0,null=False)
    curr_booked_paid_leave = models.IntegerField(help_text="Currently booked paid leave",default=0,null=False) 
    curr_booked_unpaid_leave = models.IntegerField("Currently booked unpaid leave",default=0,null=False)
-   hrm_id = models.CharField(max_length=255,help_text="Employee HRM ID",null=True,blank=True)
    is_leave_approved = models.BooleanField(help_text="Set to True whenever Reporting manager of the employee approve the leave. By default it is True",default=False)
    
    class Meta:
@@ -126,7 +128,6 @@ class Attendence(models.Model):
    checkout_time = models.TimeField(auto_now=False)
    ttl_work_time = models.TimeField(auto_now=False)
    
-
 class TimeTracker(models.Model):
    date = models.DateField()
    user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -145,12 +146,12 @@ def count_leave_days(instance):
    return (diff+1)
    
 
-@receiver(post_save,sender=EmpSelf)
-def process_emp(sender,instance,created,**kwargs):
-   if created:
-      hrm_id = create_hrm(instance)
-      emp_id = instance.id
-      EmpSelf.objects.filter(id = emp_id).update(hrm_id=hrm_id)
+# @receiver(post_save,sender=EmpSelf)
+# def process_emp(sender,instance,created,**kwargs):
+#    if created:
+#       hrm_id = create_hrm(instance)
+#       emp_id = instance.id
+#       EmpSelf.objects.filter(id = emp_id).update(hrm_id=hrm_id)
 
       
      

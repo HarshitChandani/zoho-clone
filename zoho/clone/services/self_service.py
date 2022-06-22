@@ -1,7 +1,8 @@
-from ..models import EmpSelf as employee
+# Local import
+from clone.models import EmpSelf as employee
+
 
 def emp_self_data(request,**kwargs):
-      hrm_id = kwargs.get('hrm_id')
       working_status_dict = {
             'WFH':'work from home',
             'WFO':'work from office',
@@ -9,7 +10,7 @@ def emp_self_data(request,**kwargs):
          }
       emp_data = employee.objects \
                         .select_related('dept','personal','rm') \
-                        .get(hrm_id=hrm_id)
+                        .get(user=request.user)
       response = {
          'zoho':{
             'index':['about_me','personal','work']
@@ -38,7 +39,6 @@ def emp_self_data(request,**kwargs):
          },
          'work':{
             'reporting_manager':"{} {}".format(emp_data.rm.first_name,emp_data.rm.last_name),
-            'hrm_id':hrm_id,
             'office_mail':request.user.email,
             'joining_date':emp_data.joining_date,
             'status':emp_data.status,

@@ -3,11 +3,10 @@ from datetime import datetime
 import json
 
 # Django Import
-from django.http import JsonResponse
 from django.http import HttpResponse
 
 # Local Import 
-from ..models import Attendence
+from clone.models import Attendence
 
 
 def record_attendence(request,**kwargs):

@@ -43,18 +43,18 @@
                            </td>
                            <td>
                               <div class="form-group">
-                                 <input type="text" class="form-control w-100 log-boxes" name="job-title-{{forloop.counter}}" id="job-title-{{forloop.counter}}" value="{{logs.title}}"/>
+                                 <input type="text" class="form-control w-100 log-boxes" name="job-title-{{forloop.counter}}" id="job-title-{{forloop.counter}}" value="{{logs.title}}" readonly/>
                               </div>
                            </td>
                            <td>
                               <div class="form-group">
                                  <input type="text" class="form-control w-100 log-boxes" name="job-description-{{forloop.counter}}" id="job-description-{{forloop.counter}}"
-                                 value="{{logs.description}}"/>
+                                 value="{{logs.description}}"  readonly/>
                               </div>
                            </td>
                            <td>
                               <div class="form-group">
-                                 <input type="text" class="form-control w-100 log-boxes" name="job-hour-{{forloop.counter}}" maxlength="5" id="job-hour-{{forloop.counter}}" onkeyup="daily_log_hours(this)" value="{{logs.hour}}"/>
+                                 <input type="text" class="form-control w-100 log-boxes" name="job-hour-{{forloop.counter}}" maxlength="5" id="job-hour-{{forloop.counter}}" onkeyup="daily_log_hours(this)" value="{{logs.hour}}" readonly/>
                               </div>
                            </td>
                         </tr>
@@ -88,7 +88,7 @@
             </table>
             <div class="form-group w-25">
                <span>Total hour's
-                  <input type="text" class="form-control w-100" value="" id="ttl-work-hours" readonly/></span>
+                  <input type="text" class="form-control w-100" id="ttl-work-hours" value="{{ttl_work_hrs}}" readonly/></span>
                </div>
             <div class="add-job-btn">
                <button class="btn btn-outline-primary  font-weight-bold" style="font-size:15px;width:9%" onclick="javascript:add_job_row()">Add Row</button>            

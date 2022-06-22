@@ -50,9 +50,13 @@ add_log_work_hours = (a_time,b_time) => {
 
 // Function will count the total work job hours of the timesheet 
 daily_log_hours = (element) => {
+   ttl_work_hrs = document.getElementById('ttl-work-hours').value
    log_hour = document.getElementById(element.id).value
    if (log_hour.includes(":")){
       log_hour_obj[element.id] = log_hour
+      if (ttl_work_hrs != null && ! log_hour_obj.hasOwnProperty('ttl-work-hours')){
+         log_hour_obj['ttl-work-hours'] = ttl_work_hrs
+      }
    }
    document.getElementById('ttl-work-hours').value = Object.values(log_hour_obj).reduce(add_log_work_hours)
 }
@@ -74,12 +78,14 @@ save_timetracker_data = () => {
          'hour':document.getElementById(`job-hour-${i+1}`).value
       } 
    }
+   ttl_work_hr = document.getElementById('ttl-work-hours').value
    job_json = JSON.stringify(job)
    $.ajax({
       method:"POST",
       url: "/time-tracker/",
       data: {
-         data: job_json
+         job_data: job_json,
+         ttl_work_hr: ttl_work_hr
       },
       headers:{
          'X-CSRFToken':csrf_token
