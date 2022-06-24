@@ -78,6 +78,7 @@ save_timetracker_data = () => {
          'hour':document.getElementById(`job-hour-${i+1}`).value
       } 
    }
+   print(job)
    ttl_work_hr = document.getElementById('ttl-work-hours').value
    job_json = JSON.stringify(job)
    $.ajax({

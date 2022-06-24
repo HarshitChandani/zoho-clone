@@ -56,7 +56,7 @@ class EmpPersonal(models.Model):
    hiring_src = models.CharField(max_length=100,null=False,blank=True,choices=hiring_sources)
 
    def str(self):
-      return self.user
+      return self.user.username
    
 class EmpSelf(models.Model):
    """
@@ -131,7 +131,7 @@ class Attendence(models.Model):
 class TimeTracker(models.Model):
    date = models.DateField()
    user = models.ForeignKey(User,on_delete=models.CASCADE)
-   jobs = models.TextField()
+   jobs = models.JSONField()
    ttl_hours = models.CharField(max_length = 50,null=False,blank=True)
 
 

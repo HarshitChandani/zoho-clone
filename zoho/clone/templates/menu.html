@@ -2,6 +2,28 @@
    <div class="container">
      <ul class="nav nav-pills">
       
+      <li class="nav-item my-1 mx-1" style="time-tracker">
+        <div class="attendence-box">
+          <div class="card" style="width:7rem;height:5rem" >
+            <div class="card-body">
+              <div class="attendence-timer text-center">
+                {% csrf_token %}
+                <input type="hidden" id="hidden_attendence_timer" />
+                <div id="timer" class="timer" style="font-size:16px">
+                   00:00:00
+                </div>
+              </div>
+              <div class="check-in-attendence-btn my-1">
+                <button class="btn btn-success w-100 btn-sm" id="check-in-btn" onclick="javascript:check_in()" style="display:block;font-size:15px">Check-In</button>
+                <button class="btn btn-danger w-100 btn-sm" id="check-out-btn" onclick="javascript:check_out()" style="display:none;
+                font-size:15px">Check-Out</button>
+              </div>
+            </div>
+          </div>         
+        </div>
+      </li>
+
+
       <a href="{% url 'zoho:home' %}" class="text-dark" style="text-decoration:none">
         <li class="nav-item my-1 mx-1" role="button" style="cursor:pointer">
           <div class="card" style="width:7rem;height:5rem">
@@ -89,6 +111,7 @@
          </div>
        </li>
       </a>
+      
       
      </ul>
    </div>
