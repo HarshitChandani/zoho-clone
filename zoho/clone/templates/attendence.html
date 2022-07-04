@@ -1,0 +1,124 @@
+{% extends 'layout.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<div class="d-flex flex-column">
+   <div class="row">
+      <div class="col-2"> 
+         {% include 'menu.html' %} 
+      </div>
+      <div class="col-10">
+         <div class="container-fluid">
+            <div class="row my-2">
+               <div class="col-sm-3"></div>
+               <div class="col-sm-6">
+                  <nav class="Zinlinenav">
+                     <ul class="pager">
+                        <li>
+                           <a href="{% url 'zoho:attendence-list-view'  %}?startWeek={{startWeekDate}}&endWeek={{endWeekDate}}&nav=-1" >
+                              <i class="week-nav fa-solid fa-caret-left"></i>
+                           </a>
+                        </li>
+                        <li>
+                           <input type="hidden" id="hidden-time-tracker-startWeekDate" value="{{startWeekDate}}" />
+                           <p class="time-tracker-week-dates" id="time-tracker-week-dates"> {{startWeekDate}} &nbsp-&nbsp {{endWeekDate}}  </p>
+                           <input type="hidden" id="hidden-time-tracker-endWeekDate" value={{endWeekDate}} />
+                        </li>
+                        <li>
+                           <a href="{% url 'zoho:attendence-list-view'  %}?startWeek={{startWeekDate}}&endWeek={{endWeekDate}}&nav=1" >
+                              <i class="week-nav fa-solid fa-caret-right"></i>
+                           </a>
+                        </li>
+                        {% comment %} monday to sunday  {% endcomment %}
+                     </ul>
+                  </nav>
+               </div>
+               <div class="col-sm-3"></div>
+            </div>
+            <div class="show_attendence_data my-1">
+               <div class="data-title text-center my-2">Attendence</div>
+               <div class="data-body m-4">
+                  <div class="d-flex flex-wrap flex-column">
+                     <div class="row" id="_attendence_data">
+                        {% for key,value in data_dict.items %}
+                           {% if key|date:"w" != "0"%}
+                              <div class="col-lg-6 col-sm-12 my-2">
+                                 <a href="#" style="text-decoration: none;color:black" onclick="get_attendence_by_date({{value.attendence_id}})">
+                                    <div class="card">
+                                       <div class="card-title p-2 text-center attendence-data-card mb-0">
+                                          {{key|date:"l d,Y"}}
+                                       </div>
+                                       <div class="card-body px-2 py-2">
+                                          <div class="row">
+                                             <div class="col-12">
+                                                <div class="position-relative  text-center" style="font-size:x-small">
+                                                   <p class="ttl-work-hrs-box"> 
+                                                      <div class="d-flex" style="justify-content:space-between">
+                                                         <div class="">Total Hours: {{value.total_hours|time:"H:i:s"}} hrs</div>
+                                                         <div class="">
+                                                            {% if value.attendence_record_id == "" %}
+                                                            <span class="text-danger">Absent</span>
+                                                            {% else %}
+                                                               <span class="text-success">Present</span>
+                                                            {% endif %}
+                                                         </div>
+                                                      </div>
+                                                      <div class="progress-boxes">
+                                                         {% if value.attendence_record_id == "" %}
+                                                            <div class="progress-volume" style="background:red"></div>
+                                                         {% else %}
+                                                            <div class="progress-volume" style="background:rgb(31 228 45);"></div>
+                                                         {% endif %}
+                                                   </div>
+                                                   </p>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </a>
+                              </div>
+                           {% else %}
+                              <div class="col-lg-12 col-sm-12 my-2">
+                                 <a href="#" style="text-decoration: none;color:black">
+                                    <div class="card">
+                                       <div class="card-title p-2 text-center attendence-data-card mb-0">
+                                          {{key|date:"l d,Y"}}
+                                       </div>
+                                       <div class="card-body px-2 py-2" style="background-color:rgb(255 221 221)">
+                                          <div class="row">
+                                             <div class="col-12">
+                                                <div class="position-relative  text-center" style="font-size:x-small">
+                                                   <p class="ttl-work-hrs-box"> 
+                                                      <div class="d-flex" style="justify-content:space-between">
+                                                         <div class="">Total Hours: {{value.total_hours|time:"H:i:s"}} hrs</div>
+                                                         <div>Weekend</div>
+                                                         </div>
+                                                      </div>
+                                                      <div class="progress-boxes">
+                                                         <div class="progress-volume" style="background-color:rgb(255 153 66)"></div>
+                                                   </div>
+                                                   </p>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </a>
+                              </div>
+                           {% endif %}
+                        {% endfor %}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   {% include 'attendence_data.html' %}
+{% endblock content %}
+
+
+

@@ -38,23 +38,23 @@
                         <tr style="font-size:16px" id="job-{{forloop.counter}}">
                            <td scope="row">
                               <div class="form-group">
-                                 <input type="text" class="form-control w-100 log-boxes" readonly value="{{forloop.counter}}"/>
+                                 <input type="text" class="form-control w-100 log-boxes daily-log-field" readonly value="{{forloop.counter}}"/>
                               </div>
                            </td>
                            <td>
                               <div class="form-group">
-                                 <input type="text" class="form-control w-100 log-boxes" name="job-title-{{forloop.counter}}" id="job-title-{{forloop.counter}}" value="{{logs.title}}" readonly/>
+                                 <input type="text" class="form-control w-100 log-boxes daily-log-field" name="job-title-{{forloop.counter}}" id="job-title-{{forloop.counter}}" value="{{logs.title}}" readonly/>
                               </div>
                            </td>
                            <td>
                               <div class="form-group">
-                                 <input type="text" class="form-control w-100 log-boxes" name="job-description-{{forloop.counter}}" id="job-description-{{forloop.counter}}"
+                                 <input type="text" class="form-control w-100 log-boxes daily-log-field" name="job-description-{{forloop.counter}}" id="job-description-{{forloop.counter}}"
                                  value="{{logs.description}}"  readonly/>
                               </div>
                            </td>
                            <td>
                               <div class="form-group">
-                                 <input type="text" class="form-control w-100 log-boxes" name="job-hour-{{forloop.counter}}" maxlength="5" id="job-hour-{{forloop.counter}}" onkeyup="daily_log_hours(this)" value="{{logs.hour}}" readonly/>
+                                 <input type="text" class="form-control w-100 log-boxes daily-log-field" name="job-hour-{{forloop.counter}}" maxlength="5" id="job-hour-{{forloop.counter}}" onkeyup="daily_log_hours(this)" value="{{logs.hour}}" readonly/>
                               </div>
                            </td>
                         </tr>
@@ -63,23 +63,23 @@
                      <tr style="font-size:16px" id="job-1">
                         <td scope="row">
                            <div class="form-group">
-                              <input type="text" class="form-control w-100" readonly value="1"/>
+                              <input type="text" class="form-control w-100 daily-log-field" readonly value="1"/>
                            </div>
                         </td>
                         <td>
                            <div class="form-group">
-                              <input type="text" class="form-control w-100" name="job-title-1" id="job-title-1" value=""/>
+                              <input type="text" class="form-control w-100 daily-log-field" name="job-title-1" id="job-title-1" value=""/>
                            </div>
                         </td>
                         <td>
                            <div class="form-group">
-                              <input type="text" class="form-control w-100" name="job-description-1" id="job-description-1"
+                              <input type="text" class="form-control w-100 daily-log-field" name="job-description-1" id="job-description-1"
                               value=""/>
                            </div>
                         </td>
                         <td>
                            <div class="form-group">
-                              <input type="text" class="form-control w-100" name="job-hour-1" maxlength="5" id="job-hour-1" onkeyup="daily_log_hours(this)" value=""/>
+                              <input type="text" class="form-control w-100 daily-log-field" name="job-hour-1" maxlength="5" id="job-hour-1" onkeyup="daily_log_hours(this)" value=""/>
                            </div>
                         </td>
                      </tr>

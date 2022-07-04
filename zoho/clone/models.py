@@ -121,12 +121,6 @@ class LeavesAndHolidays(models.Model):
    class Meta:
       verbose_name_plural = "Leaves and Holiday"
 
-class Attendence(models.Model):
-   user = models.ForeignKey(User,on_delete=models.CASCADE)
-   date = models.DateField()
-   checkin_time = models.TimeField(auto_now=False)
-   checkout_time = models.TimeField(auto_now=False)
-   ttl_work_time = models.TimeField(auto_now=False)
    
 class TimeTracker(models.Model):
    date = models.DateField()
@@ -134,8 +128,29 @@ class TimeTracker(models.Model):
    jobs = models.JSONField()
    ttl_hours = models.CharField(max_length = 50,null=False,blank=True)
 
+class Attendence(models.Model):
+   user = models.ForeignKey(User,on_delete=models.CASCADE)
+   date = models.DateField(auto_now=False,null=False)
+   
+   class Meta:
+      indexes = [
+         models.Index(fields = ['date'])
+      ]
+      verbose_name_plural = 'attendence'
 
+   def __str__(self):
+      return str(self.date)
+
+class DailyAttendenceRecords(models.Model):
+   attendence = models.ForeignKey(Attendence,on_delete=models.CASCADE)
+   check_in = models.TimeField(auto_now=False,auto_now_add=False)
+   check_out = models.TimeField(auto_now=False,auto_now_add=False,null=True,blank=True)
+   total_hours = models.TimeField(auto_now=False,auto_now_add=False,null=True)
+   status = models.BooleanField(help_text='user is active or not')
+   
+   
 ######## Function & Signals
+
 def count_leave_days(instance):
    from_day,from_month = int(instance.from_date.strftime("%d")),int(instance.from_date.strftime("%m"))
    to_day,to_month = int(instance.to_date.strftime("%d")),int(instance.from_date.strftime("%m"))

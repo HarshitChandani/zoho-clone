@@ -1,7 +1,6 @@
 var log_hours = new Object();
 var attendence_timer;
 var sum_ttl_work_hr = [0,0];
-var inital_log_hr = "00:00"
 var log_hour_obj = {}
 
 // Function will add new rows in the table when add row button get clicked
@@ -10,10 +9,10 @@ add_job_row = () => {
    var cnt_rows = table_obj.rows.length;
    var new_row = table_obj.rows[1].cloneNode(true);
 
-   var sr_no_box = `<input type='text' value=${cnt_rows} class='form-control' readonly>`
-   var job_title_box = `<input type='text' name='job-title-${cnt_rows}' class='form-control w-100' id='job-title-${cnt_rows}'>` 
-   var job_description_box = `<input type='text' name='job-description-${cnt_rows}' class='form-control w-100' id='job-description-${cnt_rows}'>` 
-   var job_hour_box = `<input type='text' name='job-hour-${cnt_rows}'class='form-control w-100' maxlength='5' id='job-hour-${cnt_rows}' onkeyup='daily_log_hours(this)'>`
+   var sr_no_box = `<input type='text' value=${cnt_rows} class='form-control daily-log-field' readonly>`
+   var job_title_box = `<input type='text' name='job-title-${cnt_rows}' class='form-control w-100 daily-log-field' id='job-title-${cnt_rows}'>` 
+   var job_description_box = `<input type='text' name='job-description-${cnt_rows}' class='form-control w-100 daily-log-field' id='job-description-${cnt_rows}'>` 
+   var job_hour_box = `<input type='text' name='job-hour-${cnt_rows}'class='form-control w-100 daily-log-field' maxlength='5' id='job-hour-${cnt_rows}' onkeyup='daily_log_hours(this)'>`
 
    new_row.cells[0].innerHTML = sr_no_box;
    new_row.cells[1].innerHTML = job_title_box;
@@ -21,6 +20,21 @@ add_job_row = () => {
    new_row.cells[3].innerHTML = job_hour_box
 
    table_obj.appendChild(new_row);
+}
+
+get_current_date = () => {
+   let attendence_date = new Date();
+   var dd = String(attendence_date.getDate()).padStart(2, '0');
+   var mm = String(attendence_date.getMonth() + 1).padStart(2, '0'); //January is 0!
+   var yyyy = attendence_date.getFullYear();
+   attendence_date = `${yyyy}-${mm}-${dd}`
+   return attendence_date
+}
+
+// Funtion will return current time in seconds timestamp.
+get_current_time = () =>{
+   let curr_time = new Date().getTime()
+   return curr_time
 }
 
 // IMP: Logic of below function
@@ -100,27 +114,40 @@ save_timetracker_data = () => {
    });
 }
 
-// Function will return current date in yyyy-mm-dd format
-get_current_date = () => {
-   let attendence_date = new Date();
-   var dd = String(attendence_date.getDate()).padStart(2, '0');
-   var mm = String(attendence_date.getMonth() + 1).padStart(2, '0'); //January is 0!
-   var yyyy = attendence_date.getFullYear();
-   attendence_date = `${yyyy}-${mm}-${dd}`
-   return attendence_date
-}
-
 // Execute when use click the check-in button
 check_in = () => {
-   // is_user_previously_checkedin(get_current_date())
-   const check_in_time = new Date().getTime();
-   
+   const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
+      
+   const check_in_time = get_current_time();
    localStorage.setItem('checkin_time',check_in_time)
    localStorage.setItem('checkin_date',get_current_date())
    
-   get_time_difference()
-   document.getElementById("check-in-btn").style.display = "none";
-   document.getElementById("check-out-btn").style.display = "block";
+   $.ajax({
+      method:'POST',
+      url : '/attendence/',
+      data : {
+         action:'in',
+         checkin:check_in_time,
+         date:localStorage.getItem('checkin_date') 
+      },
+      headers:{
+         'X-CSRFToken':csrf_token
+      },
+      success: (response) => {
+         if (response.checked_in){
+            get_time_difference()
+            document.getElementById("check-in-btn").style.display = "none"
+            document.getElementById("check-out-btn").style.display = "block"
+            localStorage.setItem('record-id',response.record_id)
+            localStorage.setItem('attendence-id',response.attendence_id)
+            localStorage.setItem('checked-in-status',true)
+         }
+         else{
+            alert('Error occured . Please try after some time.')
+         }
+      } 
+   })
+   
 }
 
 // Function to calculate the difference between check-in time and current time.
@@ -130,7 +157,7 @@ get_time_difference = () => {
       
       attendence_timer = setInterval( function(){
          
-         let current_time = new Date().getTime()
+         let current_time = get_current_time()
          let diff = current_time - checkin_time
          let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
          let min = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -142,7 +169,7 @@ get_time_difference = () => {
 
          document.getElementById("hidden_attendence_timer").value=time
          document.getElementById("timer").innerHTML = time; 
-      
+   
       },1000);
       document.getElementById("check-in-btn").style.display = "none";
       document.getElementById("check-out-btn").style.display = "block"; 
@@ -159,12 +186,10 @@ check_out = () =>{
    // new Date().getTime() is in milliseconds so divide it by 1000 to get the second representation
    const record_attendence_time = document.getElementById("hidden_attendence_timer").value;
    clearInterval(attendence_timer)
-   console.log(record_attendence_time)
+   
    const csrf_token = $("input[name=csrfmiddlewaretoken]").val();
-   const check_in_time = localStorage.getItem("checkin_time") / 1000  
-   const check_in_date = localStorage.getItem("checkin_date") // might use in future
-   const check_out_time = new Date().getTime() / 1000 
-   const check_out_date = get_current_date() // might use in future
+   
+   const check_out_time = get_current_time()
    $.ajax({
       method:"POST",
       url:'/attendence/',
@@ -172,38 +197,69 @@ check_out = () =>{
          'X-CSRFToken':csrf_token
       },
       data:{
-         checkin_time: check_in_time,
-         checkout_time: check_out_time,
-         ttl_work_time: record_attendence_time,
-         checkin_date: check_in_date,
-         checkout_date: check_out_date
+         checkout: check_out_time,
+         action: 'out',
+         record_id: localStorage.getItem('record-id'),
+         attendence_id: localStorage.getItem('attendence-id'),
+         ttl_work_hrs : record_attendence_time,
       },
       success: (data) => {
          console.info(data)
-         if (data.attendence_recorded){
+         if (data.success){
             localStorage.removeItem('checkin_time')
             localStorage.removeItem('checkin_date')
+            localStorage.removeItem('record-id')
+            localStorage.removeItem('attendence-id')  
             get_time_difference()
          }
          else{
             alert("Error Occured. Please try after some time.")
          }
-         
-      }
-   })  
-}
-
-// Pending
-is_user_previously_checkedin = (date) => {
-   $.ajax({
-      method:'GET',
-      data:{
-         date: date
-      },
-      success: (data) => {
-         
       }
    })
 }
 
+get_attendence_by_date = (attendence_id="") => {
+   if (attendence_id != "" ){
+      $.ajax({
+         method:"GET",
+         url:"/attendence-by-date/",
+         data:{
+            'attendence_id':attendence_id
+         },
+         success: (response) => {
+            json_data = JSON.parse(response)
+            $("#attendence-data-table-body").children().remove()
+            var attendence_table_obj = document.getElementById('attendence-data-table-body')
+            for(const data in json_data){
+               cell = document.createElement("tr")
+               check_in_time = moment(json_data[data].fields["check_in"],"hh:mm:ss A")
+               check_out_time = moment(json_data[data].fields["check_out"],"hh:mm:ss A")
+               total_hrs_time = moment(json_data[data].fields["total_hours"],"hh:mm:ss")
+
+               check_in_block = document.createElement("td")
+               check_out_block = document.createElement("td")
+               total_hr_block = document.createElement("td")
+               check_in_block.innerHTML = `${check_in_time.hours()}:${check_in_time.minutes()}:${check_in_time.seconds()}`
+               check_out_block.innerHTML = `${check_out_time.hours()}:${check_out_time.minutes()}:${check_out_time.seconds()}`
+               total_hr_block.innerHTML = `${total_hrs_time.hours()}:${total_hrs_time.minutes()}:${total_hrs_time.seconds()}`
+               
+               cell.appendChild(check_in_block)
+               cell.appendChild(check_out_block)
+               cell.appendChild(total_hr_block)
+               attendence_table_obj.appendChild(cell)
+            }
+            $("#attendenceDataModal").modal('show')
+         }
+      })
+     
+      }
+   else{
+      alert("No Data Found")
+   }
+   
+}
+
+// Pending Bug: When User check-in for the multiple times in a day . Timer restarts from the 00:00:00 .
+// When day changes the timer auto reset to 00:00:00
 

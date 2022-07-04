@@ -1,5 +1,6 @@
 {% load static %}
-<meta charset="utf-8">
+   
+   <meta charset="utf-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="description" content="">
    <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,14 +10,19 @@
 
    <!-- Google Font API-->
    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Trirong">
+   <!--JQuery-->
+   <script src="{% static 'jquery.min.js' %}"></script>
+
    <!-- Bootstrap -->
-   <link rel="stylesheet" href="{% static '/bootstrap.min.css/ '%}" crossorigin="anonymous">
+   <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}" crossorigin="anonymous">
    <script src="{%  static 'popper.min.js' %}" crossorigin="anonymous"></script>
    <script src="{% static 'bootstrap.min.js' %}" crossorigin="anonymous"></script>
-   <script src="{% static 'jquery.min.js' %}"></script>
-   <!-- Bootstrap -->
+   
+   <!-- Custom Javascript -->
+   <script src="{% static 'index.js' %}"></script>
 
-   <!-- font-awesome-links -->
-   <script src="https://kit.fontawesome.com/430063ff42.js" crossorigin="anonymous"></script>
+   <!--Custom CSS-->
+   <link rel="stylesheet" href="{% static 'index.css' %}">
 
-   <script src="{% static '/index.js/' %}"></script>
+   <!-- moment.js API -->
+   <script src="{% static 'moment.js' %}"></script>

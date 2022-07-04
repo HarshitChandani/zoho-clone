@@ -1,0 +1,56 @@
+body{
+   font-family:cursive !important;
+}
+.daily-log-field{
+   border-top:none;
+   border-right:none;
+   border-left:none;
+   height:35px;
+   font-size:15px;
+}
+.Zinlinenav{
+   text-align:center; 
+}
+ul.pager{
+   list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+ul.pager li {
+   display: inline-block;
+   min-width: 5em;
+}
+.datenavigation{
+   font-size:19px;
+}
+.week-nav{
+   color:rgb(156, 156, 156);
+   cursor:pointer
+}
+.week-dates{
+   font-size:small
+}
+.attendence-data-card{
+   font-size:18px;
+   border:none;
+   background-color:rgb(255 224 152);
+}
+.progress-boxes{
+   margin:1rem 0;
+   width:100%;
+   height:15px;
+   background-color: #222;
+   border-radius: 100vmax;
+   overflow:hidden;
+   box-shadow: 0 0 5px 2px #ffe60030 ;
+}
+
+.progress-volume{
+   height: 100%;
+   width:100%;
+   
+   padding-left:  5px;
+   color:#ddf;
+}
